@@ -21,7 +21,6 @@ app.use(cors({
 app.use(express.json());
 
 // Configuration from environment variables
-const WASH_PRICE = parseInt(process.env.WASH_PRICE, 10);
 const PRODUCT_NAME = process.env.PRODUCT_NAME;
 const BASE_URL = process.env.BASE_URL;
 const SUCCESS_PATH = process.env.SUCCESS_PATH;
@@ -48,7 +47,7 @@ app.post('/api/create-checkout', async (req, res) => {
             product_data: {
               name: PRODUCT_NAME,
             },
-            unit_amount: WASH_PRICE,
+            unit_amount: data.price,
           },
           quantity: 1,
         },
