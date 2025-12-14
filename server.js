@@ -47,7 +47,7 @@ app.post('/api/create-checkout', async (req, res) => {
             product_data: {
               name: PRODUCT_NAME,
             },
-            unit_amount: data.price,
+            unit_amount: parseInt(data.price, 10),
           },
           quantity: 1,
         },
