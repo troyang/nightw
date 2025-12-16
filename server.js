@@ -35,6 +35,17 @@ app.post('/api/create-checkout', async (req, res) => {
 
     const data = req.body;
 
+    // Clean metadata: convert all values to strings, skip Tilda internal fields
+    const metadata = {};
+    for (const [key, value] of Object.entries(data)) {
+      // Skip Tilda internal fields and arrays
+      if (key.startsWith('tildaspec') || key.startsWith('formservices')) {
+        continue;
+      }
+      // Convert everything to string
+      metadata[key] = Array.isArray(value) ? value.join(', ') : String(value);
+    }
+
     // Create Stripe Checkout Session with all incoming data as metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -52,8 +63,8 @@ app.post('/api/create-checkout', async (req, res) => {
           quantity: 1,
         },
       ],
-      // Pass all incoming data as metadata
-      metadata: data,
+      // Pass cleaned data as metadata
+      metadata: metadata,
       success_url: `${BASE_URL}${SUCCESS_PATH}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${BASE_URL}${CANCEL_PATH}`,
     });
